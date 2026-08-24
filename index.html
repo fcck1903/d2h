@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>餘白囍事 | 質感婚禮數位設計</title>
+    <!-- 引入高質感明體字型 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #FDFCF9; /* 溫潤的象牙白底色 */
+            --text-main: #333333;
+            --text-light: #7A7A7A;
+            --accent-color: #BCA882; /* 質感香檳金 */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Serif TC', serif;
+            scroll-behavior: smooth; /* 平滑滾動 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            overflow-x: hidden; 
+        }
+
+        /* ================= 開場動畫 (Splash Screen) ================= */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 0.8s ease;
+        }
+
+        .splash-brand {
+            font-size: 2.5rem;
+            letter-spacing: 15px;
+            color: var(--text-main);
+            margin-bottom: 20px;
+            animation: pulse 3s infinite ease-in-out;
+        }
+
+        .splash-hint {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            letter-spacing: 3px;
+            animation: fadeInOut 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.7; transform: scale(0.98); }
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        /* ================= 區塊一：首頁視覺 (Hero Section) ================= */
+        .hero-section {
+            height: 100vh;
+            display: flex; 
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            color: #fff;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            animation: slowZoom 20s infinite alternate linear; 
+            filter: grayscale(100%); /* 套用黑白濾鏡 */
+        }
+
+        @keyframes slowZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            z-index: 1;
+            padding: 0 20px;
+            /* 移除原本的整塊 translateY 隱藏，讓各元素自己控制動畫 */
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 400;
+            letter-spacing: 15px;
+            margin-bottom: 5px;
+            margin-right: -15px; 
+            text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            /* 加入淡入向上動畫 */
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .hero-subtitle {
+             font-size: 1rem;
+             letter-spacing: 5px;
+             margin-bottom: 40px;
+             /* 加入淡入向上動畫，稍微延遲 */
+             opacity: 0;
+             transform: translateY(20px);
+             transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+        }
+
+        /* 當 body 加上 show-content 時觸發標題動畫 */
+        .show-content .hero-title,
+        .show-content .hero-subtitle {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .wedding-quote {
+            max-width: 600px;
+            margin: 0 auto;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            line-height: 2.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            min-height: 140px; 
+        }
+        
+        /* 每個段落獨立設定淡入動畫 */
+        .wedding-quote p {
+            margin-bottom: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.2s ease, transform 1.2s ease;
+        }
+
+        /* 透過 CSS 選擇器設定不同的延遲時間，製造層次感 */
+        /* 第一段：延遲 0.8 秒 (在標題出現後) */
+        .show-content .wedding-quote p:nth-child(1) {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.8s;
+        }
+
+        /* 第二段：延遲 1.5 秒 */
+        .show-content .wedding-quote p:nth-child(2) {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 1.5s;
+        }
+
+        .down-arrow {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+            text-decoration: none;
+            opacity: 0; /* 預設隱藏 */
+            z-index: 2;
+            transition: opacity 1s ease 2.5s; /* 最後才浮現 */
+        }
+        
+        .show-content .down-arrow {
+            opacity: 0.7;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-15px) translateX(-50%); }
+            60% { transform: translateY(-7px) translateX(-50%); }
+        }
+
+        /* ================= 內頁共通設定 ================= */
+        .section-container {
+            max-width: 1000px; 
+            margin: 0 auto;
+            padding: 120px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            letter-spacing: 6px;
+            margin-bottom: 20px;
+            font-weight: 300;
+            color: var(--text-main);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1rem;
+            letter-spacing: 3px;
+            margin-bottom: 60px;
+            color: var(--text-light);
+        }
+
+        /* ================= 區塊二：品牌故事 ================= */
+        .about-section {
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .about-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .about-quote {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            color: var(--accent-color);
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        .about-text p {
+            margin-bottom: 25px;
+            letter-spacing: 1.5px;
+            line-height: 2.2;
+            color: #555;
+            text-align: justify;
+        }
+
+        /* ================= 區塊三：設計模板展示 ================= */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        /* 卡片本體樣式 */
+        .template-card {
+            background-color: #fff;
+            border-radius: 12px;
+            border: 1px solid #EAEAEA;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        /* 卡片懸浮互動 */
+        .template-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(188, 168, 130, 0.15); /* 使用品牌色作為陰影 */
+        }
+
+        .template-img-wrapper {
+            width: 100%;
+            /* 1:1 正方形比例 */
+            aspect-ratio: 1 / 1;
+            background-color: #F5F5F5;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border-radius: 8px; /* 圖片稍微加圓角 */
+        }
+
+        .template-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .template-card:hover .template-img {
+            transform: scale(1.03);
+        }
+
+        /* 卡片文字樣式 */
+        .template-name {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: 2px;
+        }
+
+        .template-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        /* 卡片價格專屬樣式 */
+        .template-price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-top: -10px; /* 拉近與小標題的距離 */
+            margin-bottom: 15px;
+            letter-spacing: 1.5px;
+        }
+
+        .btn-link {
+            display: inline-block;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            transition: opacity 0.3s ease;
+            border-bottom: 1px solid var(--accent-color);
+            padding-bottom: 2px;
+            margin-bottom: 10px;
+        }
+
+        .btn-link:hover {
+            opacity: 0.7;
+        }
+
+        /* ================= 區塊四：訂製流程 ================= */
+        .process-section {
+            background-color: #fff;
+        }
+
+        .process-list {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .process-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        /* 時間軸連線 */
+        .process-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 17px;
+            width: 1px;
+            height: calc(100% - 30px);
+            background-color: #EAEAEA;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-right: 25px;
+            z-index: 1;
+        }
+
+        .step-content h4 {
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .step-content p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 0;
+        }
+
+        .highlight-text {
+            color: var(--accent-color);
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* ================= 區塊五：行動呼籲 (CTA) ================= */
+        .cta-section {
+            text-align: center;
+            padding: 80px 20px 120px 20px;
+        }
+        
+        .cta-title {
+             font-size: 1.5rem;
+             letter-spacing: 4px;
+             margin-bottom: 40px;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 15px 40px;
+            background-color: var(--accent-color);
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(188, 168, 130, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(188, 168, 130, 0.4);
+            background-color: #a8946e;
+        }
+
+        /* ================= 頁尾 ================= */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid #EAEAEA;
+            color: #aaa;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            background-color: #fff;
+        }
+
+        /* ================= 手機版微調 ================= */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.8rem;
+                letter-spacing: 10px;
+                margin-right: -10px;
+            }
+            .hero-subtitle {
+                font-size: 0.9rem;
+            }
+            .wedding-quote {
+                font-size: 1rem;
+                min-height: 160px;
+            }
+            .section-title {
+                font-size: 1.6rem;
+            }
+            .about-quote {
+                font-size: 1.05rem;
+            }
+            .template-img-wrapper {
+                max-width: 320px;
+                margin: 0 auto 20px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 開場動畫 -->
+    <div id="splash-screen">
+        <div class="splash-brand">餘白囍事</div>
+        <div class="splash-hint">- 點擊進入 -</div>
+    </div>
+
+    <!-- 區塊一：首頁視覺 (Hero Section) -->
+    <section class="hero-section" id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">餘白囍事</h1>
+            <div class="hero-subtitle">Blank Space</div>
+            
+            <div class="wedding-quote">
+                <p>嗨，要把好消息傳遞出去了嗎？</p>
+                <p>捨去繁瑣的傳統禮俗，為彼此留下一處純粹的空白。<br>用最輕盈、最有質感的方式，發送專屬於你們的結婚預告。</p>
+            </div>
+        </div>
+        
+        <!-- 向下箭頭，引導往下看 -->
+        <a href="#about" class="down-arrow">↓</a>
+    </section>
+
+    <!-- 區塊二：品牌故事 -->
+    <section class="section-container about-section" id="about">
+        <h2 class="section-title">關於餘白，與同樣在備婚的我</h2>
+        
+        <div class="about-content">
+            <div class="about-quote">
+                「希望每對新人，都能擁有自己真正喜歡的婚禮樣貌。」
+            </div>
+            <div class="about-text">
+                <p>因為自己也正處於備婚的焦慮與期待中，身為行銷人的我，對美感與細節總有著放不下的執著。在尋覓喜帖的過程中，我發現要找到完全不將就、能精準打中自己的設計真的好難。</p>
+                <p>於是，「餘白囍事」誕生了。</p>
+                <p>因為我懂你們想把一切做到最好的心，所以在這裡，你不必妥協。充滿質感的數位喜帖，為你們的婚禮拉開最美的序幕。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 區塊三：設計模板展示 -->
+    <section class="section-container" id="templates">
+        <h2 class="section-title">尋找你的命定風格</h2>
+        <div class="section-subtitle">多款精心設計的質感版型</div>
+
+        <div class="template-grid">
+            <!-- 卡片 1 -->
+            <div class="template-card">
+                <div class="template-img-wrapper">
+                    <!-- 置換為指定的 遊戲互動.png 圖片 -->
+                    <img src="https://i.meee.com.tw/Sn9ZaZv.png" alt="遊戲互動版" class="template-img">
+                </div>
+                <h3 class="template-name">遊戲互動版</h3>
+                <p class="template-desc">像素可愛風</p>
+                <p class="template-price">NT$1,280</p>
+                <!-- 替換為指定的 Canva 範本連結 -->
+                <a href="https://d2hh.my.canva.site/game" class="btn-link" target="_blank">點擊查看範本 ></a>
+            </div>
+            
+            <!-- 卡片 2 -->
+            <div class="template-card">
+                <div class="template-img-wrapper">
+                    <img src="https://placehold.co/1080x1080/EAEAEA/8C8C8C?text=圖片位置+(1:1)" alt="法式簡約" class="template-img">
+                </div>
+                <h3 class="template-name">法式簡約</h3>
+                <p class="template-desc">優雅輕奢風</p>
+                <p class="template-price">NT$1,280</p>
+                <a href="#" class="btn-link" target="_blank">點擊查看範本 ></a>
+            </div>
+
+            <!-- 卡片 3 -->
+            <div class="template-card">
+                <div class="template-img-wrapper">
+                    <img src="https://placehold.co/1080x1080/EAEAEA/8C8C8C?text=圖片位置+(1:1)" alt="復古底片" class="template-img">
+                </div>
+                <h3 class="template-name">復古底片</h3>
+                <p class="template-desc">經典回憶風</p>
+                <p class="template-price">NT$1,280</p>
+                <a href="#" class="btn-link" target="_blank">點擊查看範本 ></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 區塊四：訂製流程 -->
+    <section class="section-container process-section" id="process">
+        <h2 class="section-title">簡單 5 步驟，輕鬆完成專屬喜帖</h2>
+
+        <div class="process-list">
+            <div class="process-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>挑選您喜愛的設計模板</h4>
+                    <p>在網站上逛逛，選擇最符合你們婚禮氛圍的版型。</p>
+                </div>
+            </div>
+            <div class="process-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>加入官方 LINE 洽詢</h4>
+                    <p>點擊下方按鈕加入客服，告訴我們您的需求，由專人為您服務。</p>
+                </div>
+            </div>
+            <div class="process-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>匯款費用與提供資訊</h4>
+                    <p>繳交你們最滿意的婚紗照，以及婚宴的詳細時間、地點等資訊。</p>
+                </div>
+            </div>
+            <div class="process-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>校稿確認</h4>
+                    <p>設計師進行專屬排版，與您仔細確認每一個文字與畫面細節。</p>
+                </div>
+            </div>
+            <div class="process-item">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h4>完稿交付</h4>
+                    <p>一切就緒！提供專屬網頁連結與圖檔。</p>
+                    <span class="highlight-text">（網頁版連結將為您保留 6 個月，讓您有充裕的時間發送與回味）</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 區塊五：行動呼籲 (CTA) -->
+    <section class="cta-section" id="contact">
+        <h3 class="cta-title">準備好製作您的喜帖了嗎？</h3>
+        <!-- 將 # 替換為您的 LINE 官方帳號連結 -->
+        <a href="#" class="btn-primary" target="_blank">加入官方 LINE 洽詢</a>
+    </section>
+
+    <!-- 頁尾 -->
+    <footer>
+        © 2026 餘白囍事 Blank Space Wedding. All Rights Reserved.
+    </footer>
+
+    <!-- 動畫與控制腳本 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const splash = document.getElementById('splash-screen');
+            const body = document.body;
+
+            // 開場動畫與首頁文字浮現邏輯
+            if (sessionStorage.getItem('yubaiSplashSeen') === 'true') {
+                splash.style.display = 'none';
+                setTimeout(() => {
+                    body.classList.add('show-content'); // 觸發首頁各項元素的淡入動畫
+                }, 100);
+            } else {
+                splash.addEventListener('click', () => {
+                    splash.style.opacity = '0'; 
+                    setTimeout(() => {
+                        splash.style.display = 'none';
+                        body.classList.add('show-content'); // 觸發首頁各項元素的淡入動畫
+                    }, 800);
+                    sessionStorage.setItem('yubaiSplashSeen', 'true');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
